@@ -1,0 +1,73 @@
+{
+  "active": false,
+  "connections": {
+    "Schedule daily midnight": {
+      "main": [
+        [
+          {
+            "node": "perform barman backup with reuse link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-02-09T18:47:57.074Z",
+  "id": "wuSNNw0znxQfE8KV",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "barman backup",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtMinute": 1
+            }
+          ]
+        }
+      },
+      "id": "7f0e0fa2-9e66-4fb7-a06e-0946cfe78b03",
+      "name": "Schedule daily midnight",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        260,
+        280
+      ]
+    },
+    {
+      "parameters": {
+        "command": "sudo -i -u barman barman backup --reuse=link timescaledb"
+      },
+      "id": "597f79d5-9b42-450d-a393-3e2272513310",
+      "name": "perform barman backup with reuse link",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        520,
+        280
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-02-26T11:59:33.000Z",
+  "versionId": "d2a74a52-0ee3-4163-849f-9e62959b3f49"
+}
