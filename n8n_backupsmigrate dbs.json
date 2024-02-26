@@ -1,0 +1,239 @@
+{
+  "active": true,
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "Checking if PostgreSQL server is ready on source",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "source is ready?": {
+      "main": [
+        [
+          {
+            "node": "migrate dbs",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "restart postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Checking if PostgreSQL server is ready on source": {
+      "main": [
+        [
+          {
+            "node": "source is ready?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait 3 min": {
+      "main": [
+        [
+          {
+            "node": "migrate dbs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "migrate dbs": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "restart postgres": {
+      "main": [
+        [
+          {
+            "node": "Wait 3 min",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-02-23T14:00:09.627Z",
+  "id": "YfGk3IbW5o8WfHQR",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "migrate dbs",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "8dd2d3cf-15c2-4144-8a38-aaef0376cfaa",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        180,
+        180
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "80494b6a-df4b-4d85-87f4-211778d5b9f4",
+              "leftValue": "={{ $json.exitCode }}",
+              "rightValue": "={{ 0 }}",
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "dac5a6a5-9e7e-42c8-a9bd-1cd7a610c54c",
+      "name": "source is ready?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        720,
+        80
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 3,
+        "unit": "minutes"
+      },
+      "id": "650c63ec-39a6-42d7-8313-877303f6358e",
+      "name": "Wait 3 min",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        920,
+        340
+      ],
+      "webhookId": "927980bf-32c7-4afb-8bd3-64fe42ea3d5e"
+    },
+    {
+      "parameters": {
+        "executeOnce": "={{ false }}",
+        "command": "=REMOTE_HOST=$(aws ssm get-parameter --name STANDBY_PUBLIC_IP --with-decryption --query 'Parameter.Value' --output text)\nPGPORT_SRC=\"5432\"\nsudo -i -u barman /bin/bash -c \"ssh postgres@$REMOTE_HOST 'pg_isready -p $PGPORT_SRC'\""
+      },
+      "id": "3a9c8b56-9b1e-4f1c-ad0e-d7c126fc36cc",
+      "name": "Checking if PostgreSQL server is ready on source",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        500,
+        180
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 5000,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "command": "=/home/ubuntu/statarb/scripts/n8n/migrate_db_csv.sh"
+      },
+      "id": "5e4e7389-ee18-4ad6-b5f1-42e03432a05b",
+      "name": "migrate dbs",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        80
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "command": "REMOTE_HOST=$(aws ssm get-parameter --name STANDBY_PUBLIC_IP --with-decryption --query 'Parameter.Value' --output text)\nsudo -i -u barman /bin/bash -c \"ssh postgres@$REMOTE_HOST 'sudo systemctl restart postgresql'\""
+      },
+      "id": "6ecc109b-ced4-4934-bc0d-0166d205fa04",
+      "name": "restart postgres",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        740,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "amount": 5,
+        "unit": "minutes"
+      },
+      "id": "b2ba74a1-7ba3-4cdd-b7c6-d25fa9de0c6a",
+      "name": "Wait",
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1,
+      "position": [
+        1280,
+        80
+      ],
+      "webhookId": "9eee67cc-e9ff-4101-83e8-2f38d1aaa4f0"
+    },
+    {
+      "parameters": {
+        "fileSelector": "~/migrate_db.log",
+        "options": {}
+      },
+      "id": "b8dccdef-c440-4143-aa01-d5509277e687",
+      "name": "Read/Write Files from Disk",
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        80
+      ]
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-02-26T17:49:05.000Z",
+  "versionId": "a03261a0-d4df-4a61-b2ff-74ac37dd1951"
+}
