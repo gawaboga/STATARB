@@ -1,0 +1,286 @@
+{
+  "active": false,
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "check standby server SSH connection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "check standby server SSH connection": {
+      "main": [
+        [
+          {
+            "node": "ssh connection to standby",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get last barman backup": {
+      "main": [
+        [
+          {
+            "node": "backup exist",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ssh connection to standby": {
+      "main": [
+        [
+          {
+            "node": "get last barman backup",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "ssh connection to standby Fail",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "backup exist": {
+      "main": [
+        [
+          {
+            "node": "recover last backup",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No backup found",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "recover last backup": {
+      "main": [
+        [
+          {
+            "node": "restart postgres service",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "restart postgres service": {
+      "main": [
+        [
+          {
+            "node": "check if postgres is ready on 5432 port",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-02-23T13:16:34.381Z",
+  "id": "fnmxB6hgC6jaXAt2",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "recover barman backup",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "c149c510-5c77-4885-984a-232632661945",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        180,
+        120
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=REMOTE_HOST=$(aws ssm get-parameter --name STANDBY_PUBLIC_IP --with-decryption --query 'Parameter.Value' --output text)\n# Before executing a command, check SSH connection\nssh -o BatchMode=yes -o ConnectTimeout=5 postgres@$REMOTE_HOST \"echo SSH connection successful\"\nif [ $? -ne 0 ]; then\n    echo \"SSH connection failed. Exiting...\"\n    exit 1\nfi"
+      },
+      "id": "89c9ed5a-187d-4356-ab1e-32fa3b28eae2",
+      "name": "check standby server SSH connection",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        360,
+        460
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=SERVER_ID=\"timescaledb\"\nLATEST_BACKUP_ID=$(sudo -i -u barman barman list-backup $SERVER_ID 2>&1 | head -n 1 | awk '{print $2}')\necho \"$LATEST_BACKUP_ID\""
+      },
+      "id": "14294958-55b3-46dd-80a7-ee0f48f6e6f0",
+      "name": "get last barman backup",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        620,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "5bbfde7f-9b91-48f5-9f43-a8fad6633464",
+              "leftValue": "={{ $json.stdout }}",
+              "rightValue": "",
+              "operator": {
+                "type": "dateTime",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0eb5d762-e967-4593-bf1b-be256b24a7be",
+      "name": "backup exist",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        800,
+        60
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict"
+          },
+          "conditions": [
+            {
+              "id": "cf709aa9-946c-4857-9dc4-2257ecc721d5",
+              "leftValue": "={{ $json.exitCode }}",
+              "rightValue": "={{ 0 }}",
+              "operator": {
+                "type": "number",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "0130eef2-f8ba-4f03-bc97-960642dc6b57",
+      "name": "ssh connection to standby",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        400,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "command": "=SERVER_ID=\"timescaledb\"\nREMOTE_HOST=$(aws ssm get-parameter --name STANDBY_PUBLIC_IP --with-decryption --query 'Parameter.Value' --output text)\nREMOTE_PGDATA_PATH=$(ssh -o BatchMode=yes -o ConnectTimeout=30 postgres@$REMOTE_HOST \"psql -p 5432 -t -c 'SHOW data_directory;'\")\necho \"Remote PostgreSQL data directory: $REMOTE_PGDATA_PATH\"\nsudo -i -u barman /bin/bash -c \"barman recover --remote-ssh-command 'ssh postgres@${REMOTE_HOST}' $SERVER_ID {{ $('get last barman backup').item.json.stdout }} $REMOTE_PGDATA_PATH\""
+      },
+      "id": "f86b029e-c907-4e5f-bf9c-63595d42cd32",
+      "name": "recover last backup",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1000,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "command": "echo \"SSH to standby server failed\""
+      },
+      "id": "0d08dac7-8761-476a-88c2-ccb39f95e2c0",
+      "name": "ssh connection to standby Fail",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        600,
+        340
+      ]
+    },
+    {
+      "parameters": {
+        "command": "echo \"No backup found for server\""
+      },
+      "id": "e1008e66-3e21-4ec4-819f-5b0894d11920",
+      "name": "No backup found",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1060,
+        160
+      ]
+    },
+    {
+      "parameters": {
+        "command": "REMOTE_HOST=$(aws ssm get-parameter --name STANDBY_PUBLIC_IP --with-decryption --query 'Parameter.Value' --output text)\nsudo -i -u barman /bin/bash -c \"ssh postgres@$REMOTE_HOST 'sudo systemctl restart postgresql'\"\n"
+      },
+      "id": "2fa2cdd7-d67c-4197-a2de-9630da7677b4",
+      "name": "restart postgres service",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1220,
+        -80
+      ]
+    },
+    {
+      "parameters": {
+        "command": "REMOTE_HOST=$(aws ssm get-parameter --name STANDBY_PUBLIC_IP --with-decryption --query 'Parameter.Value' --output text)\nsudo -i -u barman /bin/bash -c \"ssh postgres@$REMOTE_HOST 'pg_isready -p 5432'\""
+      },
+      "id": "600d5e3e-2dc5-4a6c-91f4-5550c01ce8cb",
+      "name": "check if postgres is ready on 5432 port",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1440,
+        -80
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-02-26T17:48:53.000Z",
+  "versionId": "90fcafb5-0cb4-4a89-8800-7346a7012a7c"
+}
