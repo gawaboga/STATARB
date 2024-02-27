@@ -1,0 +1,60 @@
+{
+  "active": false,
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "verify_target",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-02-26T23:18:28.398Z",
+  "id": "hqEfXbRMioQV9fQm",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "verify target",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "be49ffd0-57f7-467f-abe1-47aac4fb3046",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        460,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "command": "/home/ubuntu/statarb/scripts/n8n/verify_target.sh"
+      },
+      "id": "4a783dd5-a415-4b82-be11-0f0f27ba6560",
+      "name": "verify_target",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        680,
+        360
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-02-27T01:30:05.000Z",
+  "versionId": "6af9d0a6-fcfe-429c-83b4-020b5a4db253"
+}
