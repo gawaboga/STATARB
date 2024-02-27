@@ -12,28 +12,6 @@
         ]
       ]
     },
-    "perform barman backup with reuse link": {
-      "main": [
-        [
-          {
-            "node": "Telegram1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "recover barman backup": {
-      "main": [
-        [
-          {
-            "node": "Telegram",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Telegram": {
       "main": [
         [
@@ -56,17 +34,6 @@
         ]
       ]
     },
-    "migrate dbs": {
-      "main": [
-        [
-          {
-            "node": "Telegram2",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "Telegram2": {
       "main": [
         [
@@ -78,11 +45,72 @@
         ]
       ]
     },
+    "perform barman backup with reuse link": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram4",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "recover barman backup": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram5",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "migrate dbs": {
+      "main": [
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram6",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
     "verify target": {
       "main": [
         [
           {
             "node": "Telegram3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram7",
             "type": "main",
             "index": 0
           }
@@ -112,53 +140,8 @@
       "type": "n8n-nodes-base.scheduleTrigger",
       "typeVersion": 1.1,
       "position": [
-        -260,
-        100
-      ]
-    },
-    {
-      "parameters": {
-        "command": "sudo -i -u barman barman backup --reuse=link timescaledb"
-      },
-      "id": "597f79d5-9b42-450d-a393-3e2272513310",
-      "name": "perform barman backup with reuse link",
-      "type": "n8n-nodes-base.executeCommand",
-      "typeVersion": 1,
-      "position": [
-        0,
-        100
-      ],
-      "retryOnFail": true,
-      "maxTries": 2,
-      "waitBetweenTries": 5000,
-      "alwaysOutputData": true
-    },
-    {
-      "parameters": {
-        "workflowId": "fnmxB6hgC6jaXAt2",
-        "options": {}
-      },
-      "id": "88164de8-68f8-41b7-840d-0832d5c1d3e3",
-      "name": "recover barman backup",
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1,
-      "position": [
-        240,
-        100
-      ]
-    },
-    {
-      "parameters": {
-        "workflowId": "YfGk3IbW5o8WfHQR",
-        "options": {}
-      },
-      "id": "8ae2f178-c476-4f26-af24-3d9da05f96bc",
-      "name": "migrate dbs",
-      "type": "n8n-nodes-base.executeWorkflow",
-      "typeVersion": 1,
-      "position": [
-        500,
-        100
+        -680,
+        -40
       ]
     },
     {
@@ -172,8 +155,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
       "position": [
-        280,
-        340
+        -180,
+        -80
       ],
       "alwaysOutputData": true,
       "retryOnFail": true,
@@ -195,8 +178,8 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
       "position": [
-        0,
-        320
+        -460,
+        -80
       ],
       "credentials": {
         "telegramApi": {
@@ -216,8 +199,179 @@
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.1,
       "position": [
-        720,
-        340
+        120,
+        -60
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.stdout }}",
+        "additionalFields": {}
+      },
+      "id": "6fa78783-4adb-4bfd-81dc-2bd057301f2e",
+      "name": "Telegram3",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        -40
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "command": "sudo -i -u barman barman backup --reuse=link timescaledb"
+      },
+      "id": "597f79d5-9b42-450d-a393-3e2272513310",
+      "name": "perform barman backup with reuse link",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -520,
+        160
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.stdout }} , ExitCode:{{ $json.exitCode }}",
+        "additionalFields": {}
+      },
+      "id": "3f4a1039-e51b-4a96-bb9f-6284e2cad463",
+      "name": "Telegram4",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        -480,
+        440
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": "fnmxB6hgC6jaXAt2",
+        "options": {}
+      },
+      "id": "88164de8-68f8-41b7-840d-0832d5c1d3e3",
+      "name": "recover barman backup",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        -280,
+        160
+      ],
+      "alwaysOutputData": true,
+      "executeOnce": false,
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.stdout }}",
+        "additionalFields": {}
+      },
+      "id": "c6c01a9e-665b-45cf-8191-fa5c5946eb83",
+      "name": "Telegram5",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        -160,
+        440
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": "YfGk3IbW5o8WfHQR",
+        "options": {}
+      },
+      "id": "8ae2f178-c476-4f26-af24-3d9da05f96bc",
+      "name": "migrate dbs",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        0,
+        160
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "executeOnce": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "id": "bad0e801-bee8-4d16-9e70-98f1ee6a8ed6",
+      "name": "Telegram6",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        160,
+        460
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.stdout }}",
+        "additionalFields": {}
+      },
+      "id": "86ac2329-7352-47d9-9339-cc85d4300f83",
+      "name": "Telegram7",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        460
       ],
       "alwaysOutputData": true,
       "retryOnFail": true,
@@ -238,32 +392,14 @@
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [
-        860,
-        100
-      ]
-    },
-    {
-      "parameters": {
-        "chatId": "-1002018473284",
-        "text": "={{ $json.stdout }}",
-        "additionalFields": {}
-      },
-      "id": "6fa78783-4adb-4bfd-81dc-2bd057301f2e",
-      "name": "Telegram3",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.1,
-      "position": [
-        1040,
-        360
+        300,
+        160
       ],
+      "executeOnce": true,
       "alwaysOutputData": true,
       "retryOnFail": true,
-      "credentials": {
-        "telegramApi": {
-          "id": "H7DcyX3cpnKntlZV",
-          "name": "Telegram account"
-        }
-      }
+      "maxTries": 2,
+      "onError": "continueErrorOutput"
     }
   ],
   "pinData": {},
@@ -280,6 +416,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-02-27T01:29:25.000Z",
-  "versionId": "4ff44cf9-c65b-45fc-87b2-6e0511e85e08"
+  "updatedAt": "2024-02-27T15:18:19.000Z",
+  "versionId": "608a3657-ace9-44b5-9682-270cc2000701"
 }
