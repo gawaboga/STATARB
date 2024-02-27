@@ -1,0 +1,285 @@
+{
+  "active": true,
+  "connections": {
+    "Schedule daily midnight": {
+      "main": [
+        [
+          {
+            "node": "perform barman backup with reuse link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "perform barman backup with reuse link": {
+      "main": [
+        [
+          {
+            "node": "Telegram1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "recover barman backup": {
+      "main": [
+        [
+          {
+            "node": "Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram": {
+      "main": [
+        [
+          {
+            "node": "migrate dbs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram1": {
+      "main": [
+        [
+          {
+            "node": "recover barman backup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "migrate dbs": {
+      "main": [
+        [
+          {
+            "node": "Telegram2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Telegram2": {
+      "main": [
+        [
+          {
+            "node": "verify target",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "verify target": {
+      "main": [
+        [
+          {
+            "node": "Telegram3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-02-09T18:47:57.074Z",
+  "id": "wuSNNw0znxQfE8KV",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "migrate with barman backup",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtMinute": 1
+            }
+          ]
+        }
+      },
+      "id": "7f0e0fa2-9e66-4fb7-a06e-0946cfe78b03",
+      "name": "Schedule daily midnight",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -260,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "command": "sudo -i -u barman barman backup --reuse=link timescaledb"
+      },
+      "id": "597f79d5-9b42-450d-a393-3e2272513310",
+      "name": "perform barman backup with reuse link",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        0,
+        100
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "waitBetweenTries": 5000,
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "workflowId": "fnmxB6hgC6jaXAt2",
+        "options": {}
+      },
+      "id": "88164de8-68f8-41b7-840d-0832d5c1d3e3",
+      "name": "recover barman backup",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        240,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "workflowId": "YfGk3IbW5o8WfHQR",
+        "options": {}
+      },
+      "id": "8ae2f178-c476-4f26-af24-3d9da05f96bc",
+      "name": "migrate dbs",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        500,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.stdout }}",
+        "additionalFields": {}
+      },
+      "id": "647b4ed8-4d80-4839-bcad-413dd32e06b0",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        280,
+        340
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.stdout }} , ExitCode:{{ $json.exitCode }}",
+        "additionalFields": {}
+      },
+      "id": "7497c3cf-4076-440c-b752-83848591de8f",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        0,
+        320
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "id": "57bdb8ef-d198-45e7-8285-532700f76a18",
+      "name": "Telegram2",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        340
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "workflowId": "hqEfXbRMioQV9fQm",
+        "options": {}
+      },
+      "id": "d907c91a-ec9d-427f-8d38-173bc103a675",
+      "name": "verify target",
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1,
+      "position": [
+        860,
+        100
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.stdout }}",
+        "additionalFields": {}
+      },
+      "id": "6fa78783-4adb-4bfd-81dc-2bd057301f2e",
+      "name": "Telegram3",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        1040,
+        360
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": {
+    "node:Schedule Trigger": {
+      "recurrencyRules": []
+    },
+    "node:Schedule daily midnight": {
+      "recurrencyRules": []
+    }
+  },
+  "tags": [],
+  "triggerCount": 1,
+  "updatedAt": "2024-02-27T01:29:25.000Z",
+  "versionId": "4ff44cf9-c65b-45fc-87b2-6e0511e85e08"
+}
