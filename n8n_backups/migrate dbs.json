@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "Execute Workflow Trigger": {
       "main": [
@@ -41,22 +41,11 @@
         ]
       ]
     },
-    "Wait 3 min": {
-      "main": [
-        [
-          {
-            "node": "migrate dbs",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "migrate dbs": {
       "main": [
         [
           {
-            "node": "Wait",
+            "node": "Code",
             "type": "main",
             "index": 0
           }
@@ -67,18 +56,18 @@
       "main": [
         [
           {
-            "node": "Wait 3 min",
+            "node": "Wait 1 min",
             "type": "main",
             "index": 0
           }
         ]
       ]
     },
-    "Wait": {
+    "Wait 1 min": {
       "main": [
         [
           {
-            "node": "Read/Write Files from Disk",
+            "node": "migrate dbs",
             "type": "main",
             "index": 0
           }
@@ -102,7 +91,8 @@
       "position": [
         180,
         180
-      ]
+      ],
+      "notesInFlow": false
     },
     {
       "parameters": {
@@ -135,21 +125,6 @@
         720,
         80
       ]
-    },
-    {
-      "parameters": {
-        "amount": 3,
-        "unit": "minutes"
-      },
-      "id": "650c63ec-39a6-42d7-8313-877303f6358e",
-      "name": "Wait 3 min",
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1,
-      "position": [
-        920,
-        340
-      ],
-      "webhookId": "927980bf-32c7-4afb-8bd3-64fe42ea3d5e"
     },
     {
       "parameters": {
@@ -199,32 +174,32 @@
     },
     {
       "parameters": {
-        "amount": 5,
-        "unit": "minutes"
+        "jsCode": "// Assuming items[0].json contains the object with exitCode, stderr, and stdout\nconst stdoutContent = items[0].json.stdout || ''; // Provide a default empty string if undefined\nconst MAX_LENGTH = 4096; // Telegram max message size\nlet parts = [];\n\n// Split the stdoutContent into parts\nfor (let i = 0, charsLength = stdoutContent.length; i < charsLength; i += MAX_LENGTH) {\n    parts.push(stdoutContent.substring(i, i + MAX_LENGTH));\n}\n\n// Map each part to an object format expected by the next node\nreturn parts.map(part => ({\n    json: { message: part }\n}));\n\n\n"
       },
-      "id": "b2ba74a1-7ba3-4cdd-b7c6-d25fa9de0c6a",
-      "name": "Wait",
-      "type": "n8n-nodes-base.wait",
-      "typeVersion": 1,
+      "id": "049d95f1-3a49-409f-8a17-7b71d9523ecd",
+      "name": "Code",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
       "position": [
-        1280,
-        80
+        1260,
+        280
       ],
-      "webhookId": "9eee67cc-e9ff-4101-83e8-2f38d1aaa4f0"
+      "alwaysOutputData": true,
+      "executeOnce": true
     },
     {
       "parameters": {
-        "fileSelector": "~/migrate_db.log",
-        "options": {}
+        "unit": "minutes"
       },
-      "id": "b8dccdef-c440-4143-aa01-d5509277e687",
-      "name": "Read/Write Files from Disk",
-      "type": "n8n-nodes-base.readWriteFile",
+      "id": "650c63ec-39a6-42d7-8313-877303f6358e",
+      "name": "Wait 1 min",
+      "type": "n8n-nodes-base.wait",
       "typeVersion": 1,
       "position": [
-        1500,
-        80
-      ]
+        920,
+        340
+      ],
+      "webhookId": "927980bf-32c7-4afb-8bd3-64fe42ea3d5e"
     }
   ],
   "pinData": {},
@@ -234,6 +209,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-02-26T17:49:05.000Z",
-  "versionId": "a03261a0-d4df-4a61-b2ff-74ac37dd1951"
+  "updatedAt": "2024-02-27T01:31:07.000Z",
+  "versionId": "82115a6a-a023-44c5-afe0-90dcf1f90a90"
 }
