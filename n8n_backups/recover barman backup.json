@@ -217,7 +217,7 @@
     },
     {
       "parameters": {
-        "command": "echo \"SSH to standby server failed\""
+        "command": "echo \"SSH to standby server failed\"\nexit 1"
       },
       "id": "0d08dac7-8761-476a-88c2-ccb39f95e2c0",
       "name": "ssh connection to standby Fail",
@@ -230,7 +230,7 @@
     },
     {
       "parameters": {
-        "command": "echo \"No backup found for server\""
+        "command": "echo \"Error: No backup found, Fail to recover barman backup!\"\nexit 1"
       },
       "id": "e1008e66-3e21-4ec4-819f-5b0894d11920",
       "name": "No backup found",
@@ -281,6 +281,6 @@
   "staticData": null,
   "tags": [],
   "triggerCount": 0,
-  "updatedAt": "2024-02-26T17:48:53.000Z",
-  "versionId": "90fcafb5-0cb4-4a89-8800-7346a7012a7c"
+  "updatedAt": "2024-02-27T01:30:06.000Z",
+  "versionId": "e97ec8ad-655c-4c84-a7f9-ceda23fcbafe"
 }
