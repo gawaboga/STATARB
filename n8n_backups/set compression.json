@@ -1,0 +1,60 @@
+{
+  "active": false,
+  "connections": {
+    "Execute Workflow Trigger": {
+      "main": [
+        [
+          {
+            "node": "set_compression_target",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "createdAt": "2024-02-27T23:44:59.435Z",
+  "id": "rqey86H4KHYwI6NT",
+  "meta": {
+    "templateCredsSetupCompleted": true
+  },
+  "name": "set compression",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "4a01c0f9-b550-45fb-9637-a47ed6160928",
+      "name": "Execute Workflow Trigger",
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1,
+      "position": [
+        460,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "command": "/home/ubuntu/statarb/scripts/n8n/set_compression_target.sh"
+      },
+      "id": "d9d6990e-2d3f-416b-9e87-5f2e5cb3c3ea",
+      "name": "set_compression_target",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        680,
+        360
+      ],
+      "retryOnFail": true,
+      "maxTries": 2,
+      "alwaysOutputData": true
+    }
+  ],
+  "pinData": {},
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "tags": [],
+  "triggerCount": 0,
+  "updatedAt": "2024-02-27T23:49:24.000Z",
+  "versionId": "f88823d1-8826-4650-8e63-8c28cdb13b5c"
+}
