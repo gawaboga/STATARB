@@ -25,8 +25,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "recover barman backup": {
@@ -42,8 +41,7 @@
             "type": "main",
             "index": 0
           }
-        ],
-        []
+        ]
       ]
     },
     "migrate dbs": {
@@ -116,7 +114,7 @@
         "rule": {
           "interval": [
             {
-              "triggerAtMinute": 1
+              "triggerAtHour": 2
             }
           ]
         }
@@ -129,96 +127,6 @@
         -680,
         -40
       ]
-    },
-    {
-      "parameters": {
-        "chatId": "-1002018473284",
-        "text": "={{ $json.stdout }}",
-        "additionalFields": {}
-      },
-      "id": "647b4ed8-4d80-4839-bcad-413dd32e06b0",
-      "name": "Telegram",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.1,
-      "position": [
-        -180,
-        -80
-      ],
-      "alwaysOutputData": true,
-      "retryOnFail": true,
-      "credentials": {
-        "telegramApi": {
-          "id": "H7DcyX3cpnKntlZV",
-          "name": "Telegram account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "-1002018473284",
-        "text": "={{ $json.stdout }} , ExitCode:{{ $json.exitCode }}",
-        "additionalFields": {}
-      },
-      "id": "7497c3cf-4076-440c-b752-83848591de8f",
-      "name": "Telegram1",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.1,
-      "position": [
-        -460,
-        -80
-      ],
-      "credentials": {
-        "telegramApi": {
-          "id": "H7DcyX3cpnKntlZV",
-          "name": "Telegram account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "-1002018473284",
-        "text": "={{ $json.message }}",
-        "additionalFields": {}
-      },
-      "id": "57bdb8ef-d198-45e7-8285-532700f76a18",
-      "name": "Telegram2",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.1,
-      "position": [
-        120,
-        -60
-      ],
-      "alwaysOutputData": true,
-      "retryOnFail": true,
-      "credentials": {
-        "telegramApi": {
-          "id": "H7DcyX3cpnKntlZV",
-          "name": "Telegram account"
-        }
-      }
-    },
-    {
-      "parameters": {
-        "chatId": "-1002018473284",
-        "text": "={{ $json.stdout }}",
-        "additionalFields": {}
-      },
-      "id": "6fa78783-4adb-4bfd-81dc-2bd057301f2e",
-      "name": "Telegram3",
-      "type": "n8n-nodes-base.telegram",
-      "typeVersion": 1.1,
-      "position": [
-        460,
-        -40
-      ],
-      "alwaysOutputData": true,
-      "retryOnFail": true,
-      "credentials": {
-        "telegramApi": {
-          "id": "H7DcyX3cpnKntlZV",
-          "name": "Telegram account"
-        }
-      }
     },
     {
       "parameters": {
@@ -319,6 +227,102 @@
     {
       "parameters": {
         "chatId": "-1002018473284",
+        "text": "={{ $json.stdout }} , ExitCode:{{ $json.exitCode }}",
+        "additionalFields": {}
+      },
+      "id": "7497c3cf-4076-440c-b752-83848591de8f",
+      "name": "Telegram1",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        -460,
+        -80
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.stdout }}",
+        "additionalFields": {}
+      },
+      "id": "647b4ed8-4d80-4839-bcad-413dd32e06b0",
+      "name": "Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        -180,
+        -80
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.message }}",
+        "additionalFields": {}
+      },
+      "id": "57bdb8ef-d198-45e7-8285-532700f76a18",
+      "name": "Telegram2",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        120,
+        -60
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
+        "text": "={{ $json.stdout }}",
+        "additionalFields": {}
+      },
+      "id": "6fa78783-4adb-4bfd-81dc-2bd057301f2e",
+      "name": "Telegram3",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.1,
+      "position": [
+        460,
+        -40
+      ],
+      "alwaysOutputData": true,
+      "retryOnFail": true,
+      "credentials": {
+        "telegramApi": {
+          "id": "H7DcyX3cpnKntlZV",
+          "name": "Telegram account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "chatId": "-1002018473284",
         "text": "={{ $json.stdout }}",
         "additionalFields": {}
       },
@@ -337,7 +341,8 @@
           "id": "H7DcyX3cpnKntlZV",
           "name": "Telegram account"
         }
-      }
+      },
+      "onError": "continueRegularOutput"
     }
   ],
   "pinData": {},
@@ -357,6 +362,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-02-27T23:55:56.000Z",
-  "versionId": "cb113f54-f3b5-4086-b76a-925e4f115eb8"
+  "updatedAt": "2024-02-29T01:18:11.000Z",
+  "versionId": "477fc20c-5b03-4f25-993d-a8bfe32a5175"
 }
