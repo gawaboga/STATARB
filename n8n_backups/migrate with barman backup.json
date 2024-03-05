@@ -1,5 +1,5 @@
 {
-  "active": true,
+  "active": false,
   "connections": {
     "Schedule daily midnight": {
       "main": [
@@ -350,7 +350,8 @@
     "executionOrder": "v1",
     "saveManualExecutions": true,
     "callerPolicy": "workflowsFromSameOwner",
-    "errorWorkflow": "wohM6Mjsbq9ck27p"
+    "errorWorkflow": "wohM6Mjsbq9ck27p",
+    "timezone": "Europe/Lisbon"
   },
   "staticData": {
     "node:Schedule Trigger": {
@@ -362,6 +363,6 @@
   },
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-02-29T01:18:11.000Z",
-  "versionId": "477fc20c-5b03-4f25-993d-a8bfe32a5175"
+  "updatedAt": "2024-03-05T00:06:47.000Z",
+  "versionId": "78b2263c-fc2f-47a1-ad48-0fdccd69fba9"
 }
