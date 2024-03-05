@@ -485,10 +485,16 @@
     }
   ],
   "pinData": {},
-  "settings": {},
+  "settings": {
+    "timezone": "Europe/Lisbon",
+    "saveManualExecutions": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "executionOrder": "v0",
+    "errorWorkflow": "wohM6Mjsbq9ck27p"
+  },
   "staticData": null,
   "tags": [],
   "triggerCount": 1,
-  "updatedAt": "2024-02-26T19:30:10.000Z",
-  "versionId": "14e93f4a-912c-4776-b47f-102e1a655224"
+  "updatedAt": "2024-03-05T00:05:58.000Z",
+  "versionId": "148e7058-9198-4d45-92d7-39d8276a3d8a"
 }
